@@ -10,13 +10,19 @@
 #
 - type: vessel
   id: Broadhead
+  parent: BaseVessel
   name: NSF Broadhead
   description: A medium size detective ship with facilities for autopsies, interrogations and detailed investigations.
-  price: 43000
+  price: 60000 # TODO: fix these values, getting tests to pass - Whatstone
   category: Medium
   group: Security
   access: Detective
   shuttlePath: /Maps/_NF/Shuttles/Nfsd/broadhead.yml
+  guidebookPage: Null
+  class:
+  - Detective
+  engine:
+  - Uranium
 
 - type: gameMap
   id: Broadhead

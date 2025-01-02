@@ -4,7 +4,7 @@
   id: RogueSiliconGiftBox
   name: rogue unit's bundle
   abstract: true
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   suffix: NPC Loot
   components:
   - type: Sprite
@@ -27,15 +27,44 @@
     sound:
       path: /Audio/Machines/windoor_open.ogg
 
-# EXPLORER NPC LOOT
+# ROGUE SILICON NPC LOOT
+## TIER 0
+- type: entity
+  parent: RogueSiliconGiftBox
+  id: ClothingBackpackRogueSiliconT0
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SpawnItemsOnUse
+    items:
+    # Scrap chunks
+    - id: ScrapOre20
+      prob: 1.0
+    # Parts
+    - id: AdvancedCapacitorStockPart
+      prob: 0.3
+    - id: AdvancedMatterBinStockPart
+      prob: 0.3
+    - id: SpawnDungeonLootPowerCell
+      prob: 0.5
+    - id: SpawnDungeonLootPartsEngi
+      prob: 0.5
+    # Circuit boards
+    - id: SpawnDungeonLootCircuitBoardEngi
+      prob: 0.5
+    sound:
+      path: /Audio/Machines/windoor_open.ogg
+
 ## TIER 1
 - type: entity
   parent: RogueSiliconGiftBox
   id: ClothingBackpackRogueSiliconT1
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: SpawnItemsOnUse
     items:
+    # Scrap chunks
+    - id: ScrapOre20
+      prob: 1.0
     # Parts
     - id: AdvancedCapacitorStockPart
       prob: 0.4
@@ -60,10 +89,13 @@
 - type: entity
   parent: RogueSiliconGiftBox
   id: ClothingBackpackRogueSiliconT2
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: SpawnItemsOnUse
     items:
+    # Scrap chunks
+    - id: ScrapOre20
+      prob: 1.0
     # Parts
     - id: SuperCapacitorStockPart
       prob: 0.4
@@ -92,10 +124,13 @@
 - type: entity
   parent: RogueSiliconGiftBox
   id: ClothingBackpackRogueSiliconT3
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: SpawnItemsOnUse
     items:
+    # Scrap chunks
+    - id: ScrapOre20
+      prob: 1.0
     # Parts
     - id: QuadraticCapacitorStockPart
       prob: 0.5
@@ -128,10 +163,13 @@
 - type: entity
   parent: RogueSiliconGiftBox
   id: ClothingBackpackRogueSiliconT4
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: SpawnItemsOnUse
     items:
+    # Scrap chunks
+    - id: ScrapOre20
+      prob: 1.0
     - id: WeaponLaserTurboNF
       prob: 0.1
     # Parts

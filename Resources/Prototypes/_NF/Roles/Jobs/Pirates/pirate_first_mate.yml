@@ -25,6 +25,11 @@
   - !type:AddComponentSpecial
     components:
     - type: MailDisabled
+    - type: SpecialSectorStationRecord
+      recordGeneration: FalseRecord
+    - type: NpcFactionMember
+      factions:
+      - PirateNF
   - !type:AddImplantSpecial
     implants: [ FreelanceTrackingImplant ]
   - !type:GiveItemOnHolidaySpecial # Even pirates get a piece of cake.
@@ -34,10 +39,7 @@
 - type: startingGear
   id: PirateFirstMateNFGear
   equipment:
-    head: ClothingHeadHatPirateTricord
     ears: ClothingHeadsetAltFreelancer
-    shoes: ClothingShoesBootsLaceup
     belt: ClothingBeltUtility
     pocket1: BasePirateUplinkPirateCrew
     pocket2: AppraisalTool
-    outerClothing: ClothingOuterCoatGentle

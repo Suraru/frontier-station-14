@@ -1,5 +1,5 @@
 using System.Linq;
-using Content.Server.Bank;
+using Content.Server._NF.Bank;
 using System.Numerics;
 using Content.Server.Advertise;
 using Content.Server.Advertise.Components;
@@ -21,6 +21,7 @@ using Content.Shared.Emag.Components;
 using Content.Shared.Emag.Systems;
 using Content.Shared.Emp;
 using Content.Shared.Popups;
+using Content.Shared.Power;
 using Content.Shared.Throwing;
 using Content.Shared.UserInterface;
 using Content.Shared.VendingMachines;
@@ -33,6 +34,8 @@ using Robust.Shared.Timing;
 using Robust.Shared.Audio.Systems;
 using Content.Server.Administration.Logs; // Frontier
 using Content.Shared.Database; // Frontier
+using Content.Shared._NF.Bank.BUI; // Frontier
+using Content.Server._NF.Contraband.Systems; // Frontier
 
 namespace Content.Server.VendingMachines
 {
@@ -41,19 +44,17 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly AccessReaderSystem _accessReader = default!;
         [Dependency] private readonly AppearanceSystem _appearanceSystem = default!;
-        [Dependency] private readonly SharedActionsSystem _action = default!;
         [Dependency] private readonly PricingSystem _pricing = default!;
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
-        [Dependency] private readonly UserInterfaceSystem _userInterfaceSystem = default!;
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly SpeakOnUIClosedSystem _speakOnUIClosed = default!;
 
         [Dependency] private readonly IPrototypeManager _prototypeManager = default!; // Frontier
         [Dependency] private readonly SharedAudioSystem _audioSystem = default!; // Frontier
         [Dependency] private readonly BankSystem _bankSystem = default!; // Frontier
-        [Dependency] private readonly CargoSystem _cargo = default!; // Frontier
         [Dependency] private readonly PopupSystem _popupSystem = default!; // Frontier
         [Dependency] private readonly IAdminLogManager _adminLogger = default!; // Frontier
+        [Dependency] private readonly ContrabandTurnInSystem _contraband = default!; // Frontier
 
         private const float WallVendEjectDistanceFromWall = 1f;
 
@@ -61,7 +62,6 @@ namespace Content.Server.VendingMachines
         {
             base.Initialize();
 
-            SubscribeLocalEvent<VendingMachineComponent, MapInitEvent>(OnComponentMapInit);
             SubscribeLocalEvent<VendingMachineComponent, PowerChangedEvent>(OnPowerChanged);
             SubscribeLocalEvent<VendingMachineComponent, BreakageEventArgs>(OnBreak);
             SubscribeLocalEvent<VendingMachineComponent, GotEmaggedEvent>(OnEmagged);
@@ -73,7 +73,6 @@ namespace Content.Server.VendingMachines
 
             Subs.BuiEvents<VendingMachineComponent>(VendingMachineUiKey.Key, subs =>
             {
-                subs.Event<BoundUIOpenedEvent>(OnBoundUIOpened);
                 subs.Event<VendingMachineEjectMessage>(OnInventoryEjectMessage);
             });
 
@@ -84,22 +83,6 @@ namespace Content.Server.VendingMachines
             SubscribeLocalEvent<VendingMachineRestockComponent, PriceCalculationEvent>(OnPriceCalculation);
 
             SubscribeLocalEvent<VendingMachineComponent, GotUnEmaggedEvent>(OnUnEmagged); // Frontier - Added DEMAG
-        }
-
-        private void OnComponentMapInit(EntityUid uid, VendingMachineComponent component, MapInitEvent args)
-        {
-            _action.AddAction(uid, ref component.ActionEntity, component.Action, uid);
-            Dirty(uid, component);
-        }
-
-        protected override void OnComponentInit(EntityUid uid, VendingMachineComponent component, ComponentInit args)
-        {
-            base.OnComponentInit(uid, component, args);
-
-            if (HasComp<ApcPowerReceiverComponent>(uid))
-            {
-                TryUpdateVisualState(uid, component);
-            }
         }
 
         private void OnVendingPrice(EntityUid uid, VendingMachineComponent component, ref PriceCalculationEvent args)
@@ -120,30 +103,20 @@ namespace Content.Server.VendingMachines
             //args.Price += price; Frontier - This is used to price the worth of a vending machine with the inventory it has.
         }
 
+        protected override void OnMapInit(EntityUid uid, VendingMachineComponent component, MapInitEvent args)
+        {
+            base.OnMapInit(uid, component, args);
+
+            if (HasComp<ApcPowerReceiverComponent>(uid))
+            {
+                TryUpdateVisualState(uid, component);
+            }
+        }
+
         private void OnActivatableUIOpenAttempt(EntityUid uid, VendingMachineComponent component, ActivatableUIOpenAttemptEvent args)
         {
             if (component.Broken)
                 args.Cancel();
-        }
-
-        private void OnBoundUIOpened(EntityUid uid, VendingMachineComponent component, BoundUIOpenedEvent args)
-        {
-            if (args.Actor is not { Valid: true } player)
-                return;
-
-            var balance = 0;
-
-            if (TryComp<BankAccountComponent>(player, out var bank))
-                balance = bank.Balance;
-
-            UpdateVendingMachineInterfaceState(uid, component, balance);
-        }
-
-        private void UpdateVendingMachineInterfaceState(EntityUid uid, VendingMachineComponent component, int balance)
-        {
-            var state = new VendingMachineInterfaceState(GetAllInventory(uid, component), balance);
-
-            _userInterfaceSystem.SetUiState(uid, VendingMachineUiKey.Key, state);
         }
 
         private void OnInventoryEjectMessage(EntityUid uid, VendingMachineComponent component, VendingMachineEjectMessage args)
@@ -247,6 +220,18 @@ namespace Content.Server.VendingMachines
             component.CanShoot = canShoot;
         }
 
+        /// <summary>
+        /// Sets the <see cref="VendingMachineComponent.Contraband"/> property of the vending machine.
+        /// </summary>
+        public void SetContraband(EntityUid uid, bool contraband, VendingMachineComponent? component = null)
+        {
+            if (!Resolve(uid, ref component))
+                return;
+
+            component.Contraband = contraband;
+            Dirty(uid, component);
+        }
+
         public void Deny(EntityUid uid, VendingMachineComponent? vendComponent = null)
         {
             if (!Resolve(uid, ref vendComponent))
@@ -338,7 +323,7 @@ namespace Content.Server.VendingMachines
             if (entry.Amount != uint.MaxValue)
                 entry.Amount--;
             // End of modified code
-            UpdateVendingMachineInterfaceState(uid, vendComponent, balance);
+            Dirty(uid, vendComponent);
             TryUpdateVisualState(uid, vendComponent);
             Audio.PlayPvs(vendComponent.SoundVend, uid);
             return true;
@@ -390,22 +375,24 @@ namespace Content.Server.VendingMachines
                     return;
                 }
 
-                if (TryEjectVendorItem(uid, type, itemId, component.CanShoot, bank.Balance, component))
+                if (TryEjectVendorItem(uid, type, itemId, component.CanShoot, bank.Balance, component) &&
+                    _bankSystem.TryBankWithdraw(sender, totalPrice))
                 {
-                    var stationQuery = EntityQuery<StationBankAccountComponent>();
-
-                    foreach (var stationBankComp in stationQuery)
+                    // Frontier: tax cargo purchases
+                    foreach (var (account, taxCoeff) in component.TaxAccounts)
                     {
-                        _cargo.DeductFunds(stationBankComp, (int) -(Math.Floor(totalPrice * 0.45f)));
+                        if (!float.IsFinite(taxCoeff) || taxCoeff <= 0.0f)
+                            continue;
+                        var tax = (int)Math.Floor(totalPrice * taxCoeff);
+                        _bankSystem.TrySectorDeposit(account, tax, LedgerEntryType.VendorTax);
                     }
 
-                    _bankSystem.TryBankWithdraw(sender, totalPrice);
-                    UpdateVendingMachineInterfaceState(uid, component, bank.Balance);
+                    Dirty(uid, component);
 
                     _adminLogger.Add(LogType.Action, LogImpact.Low, // Frontier - Vending machine log
                         $"{ToPrettyString(sender):user} bought from [vendingMachine:{ToPrettyString(uid!)}, product:{proto.Name}, cost:{totalPrice},  with balance at {bank.Balance}"); // Frontier - Vending machine log
                 }
-                // Frontier
+                // End Frontier
             }
         }
 
@@ -490,7 +477,7 @@ namespace Content.Server.VendingMachines
             var old = comp.EjectRandomCounter;
             comp.EjectRandomCounter = Math.Clamp(comp.EjectRandomCounter + change, 0, comp.EjectRandomMax);
             if (comp.EjectRandomCounter != old)
-                Dirty(comp);
+                Dirty(uid, comp);
         }
 
         private void EjectItem(EntityUid uid, VendingMachineComponent? vendComponent = null, bool forceEject = false)
@@ -521,6 +508,8 @@ namespace Content.Server.VendingMachines
             }
 
             var ent = Spawn(vendComponent.NextItemToEject, spawnCoordinates);
+
+            _contraband.ClearContrabandValue(ent); // Frontier
 
             if (vendComponent.ThrowNextItem)
             {
@@ -589,11 +578,11 @@ namespace Content.Server.VendingMachines
                 }
 
                 // Added block for charges
-                if (comp.EjectRandomCounter == comp.EjectRandomMax || _timing.CurTime < comp.NextChargeTime)
+                if (comp.EjectRandomCounter == comp.EjectRandomMax || _timing.CurTime < comp.EjectNextChargeTime)
                     continue;
 
                 AddCharges(uid, 1, comp);
-                comp.NextChargeTime = _timing.CurTime + comp.RechargeDuration;
+                comp.EjectNextChargeTime = _timing.CurTime + comp.EjectRechargeDuration;
                 // Added block for charges
             }
             var disabled = EntityQueryEnumerator<EmpDisabledComponent, VendingMachineComponent>();
@@ -614,7 +603,7 @@ namespace Content.Server.VendingMachines
 
             RestockInventoryFromPrototype(uid, vendComponent);
 
-            UpdateVendingMachineInterfaceState(uid, vendComponent, 0);
+            Dirty(uid, vendComponent);
             TryUpdateVisualState(uid, vendComponent);
         }
 

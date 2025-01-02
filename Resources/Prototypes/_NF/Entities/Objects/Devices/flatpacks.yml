@@ -137,6 +137,7 @@
   id: GeneratorRTGDamagedFlatpack
   name: RTG generator flatpack
   description: A flatpack used for constructing a Radioisotope Thermoelectric Generator. The packaging seems to be somewhat damaged.
+  suffix: Damaged
   components:
   - type: Flatpack
     entity: GeneratorRTGDamaged
@@ -251,30 +252,12 @@
 
 - type: entity
   parent: ExosuitFabricatorFlatpack
-  id: ScienceTechFabFlatpack
-  name: science techfab flatpack
-  description: A flatpack used for constructing a science techfab.
-  components:
-  - type: Flatpack
-    entity: ScienceTechFab
-
-- type: entity
-  parent: ExosuitFabricatorFlatpack
   id: MachineArtifactCrusherFlatpack
   name: artifact crusher flatpack
   description: A flatpack used for constructing an artifact crusher.
   components:
   - type: Flatpack
     entity: MachineArtifactCrusher
-
-- type: entity
-  parent: ExosuitFabricatorFlatpack
-  id: MachineAnomalySynchronizerFlatpack
-  name: anomaly synchronizer flatpack
-  description: A flatpack used for constructing an anomaly synchronizer.
-  components:
-  - type: Flatpack
-    entity: MachineAnomalySynchronizer
 
 - type: entity
   parent: ExosuitFabricatorFlatpack
@@ -293,6 +276,15 @@
   components:
   - type: Flatpack
     entity: MachineAnomalyGenerator
+
+- type: entity
+  parent: ExosuitFabricatorFlatpack
+  id: BlueprintLithographFlatpack
+  name: blueprint lithograph flatpack
+  description: A flatpack used for constructing a blueprint lithograph.
+  components:
+  - type: Flatpack
+    entity: BlueprintLithograph
 
 # Service
 - type: entity
@@ -341,12 +333,12 @@
 
 - type: entity
   parent: UniformPrinterFlatpack
-  id: TilePrinterNFFlatpack
-  name: tile-meister 5000 flatpack
+  id: CutterMachineFlatpack
+  name: cutter machine flatpack
   description: A flatpack used for constructing a tile-meister 5000.
   components:
   - type: Flatpack
-    entity: TilePrinterNF
+    entity: CutterMachine
 
 - type: entity
   parent: UniformPrinterFlatpack
@@ -365,6 +357,34 @@
   components:
   - type: Flatpack
     entity: KitchenMicrowave
+
+- type: entity
+  parent: UniformPrinterFlatpack
+  id: HydroponicsSoilNutritionFlatpack
+  name: crate of fertile soil
+  description: A crate of fertile soil used for constructing a soil bed for growing. Spread it around with a shovel.
+  components:
+  - type: Flatpack
+    entity: HydroponicsSoilNutrition
+    qualityNeeded: Digging
+    unpackSound: /Audio/Items/shovel_dig.ogg
+  - type: Sprite
+    layers:
+    - state: soil
+
+- type: entity
+  parent: UniformPrinterFlatpack
+  id: HydroponicsSoilEmptyFlatpack
+  name: crate of soil
+  description: A crate of soil used for constructing a soil bed for growing. Spread it around with a shovel.
+  components:
+  - type: Flatpack
+    entity: HydroponicsSoilEmpty
+    qualityNeeded: Digging
+    unpackSound: /Audio/Items/shovel_dig.ogg
+  - type: Sprite
+    layers:
+    - state: soil
 
 # Medical
 - type: entity
@@ -469,8 +489,8 @@
 - type: entity
   parent: BaseNFFlatpack
   id: ShuttleGunKineticFlatpack
-  name: PTK-800 "Matter Dematerializer" flatpack
-  description: A flatpack used for constructing a PTK-800 "Matter Dematerializer".
+  name: PTK-1500e "Matter Dematerializer" flatpack
+  description: A flatpack used for constructing a PTK-1500e "Matter Dematerializer".
   components:
   - type: Flatpack
     entity: ShuttleGunKinetic
@@ -497,6 +517,15 @@
   components:
   - type: Flatpack
     entity: OreProcessorIndustrial
+
+- type: entity
+  parent: OreProcessorFlatpack
+  id: ScrapProcessorFlatpack
+  name: scrap processor flatpack
+  description: A flatpack used for constructing a scrap processor.
+  components:
+  - type: Flatpack
+    entity: ScrapProcessor
 
 # Mercenary
 - type: entity
@@ -635,9 +664,12 @@
   components:
   - type: Flatpack
     entity: AirlockShuttle
+  - type: Sprite
+    layers:
+    - state: command_airlock_directional
 
 - type: entity
-  parent: AirlockFlatpack
+  parent: AirlockShuttleFlatpack
   id: AirlockGlassShuttleFlatpack
   name: docking glass airlock flatpack
   description: A flatpack used for constructing a glass docking airlock.
@@ -844,6 +876,17 @@
     entity: VehicleHoverbikeSyndicateKey
   - type: StaticPrice
     price: 750
+
+- type: entity
+  parent: BaseNFFlatpack
+  id: JanicartFlatpack
+  name: janicart flatpack
+  description: A flatpack used for constructing a Janicart. Keys already slotted in the ignition. Mop sold separately.
+  components:
+  - type: Flatpack
+    entity: NFVehicleJanicartKey
+  - type: StaticPrice
+    price: 375 # 1.25 * base value of input materials
 
 # Vendomats
 - type: entity

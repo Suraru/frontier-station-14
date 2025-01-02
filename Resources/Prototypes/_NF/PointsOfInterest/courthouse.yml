@@ -7,12 +7,28 @@
 # Discord: ???
 
 # Notes:
-# 
+#
 - type: pointOfInterest
   id: Courthouse
+  parent: BasePOI
   name: "Courthouse"
-  rangeMin: 1150
-  rangeMax: 2050
-  iffColor: "#8e6444" #brown
-  alwaysSpawn: true
+  minimumDistance: 1150
+  maximumDistance: 2050
+  spawnGroup: Required
   gridPath: /Maps/_NF/POI/courthouse.yml
+  addComponents:
+  - type: IFF
+    color: "#ae7d57"
+
+- type: gameMap
+  id: Courthouse
+  mapName: "Courthouse"
+  mapPath: /Maps/_NF/POI/courthouse.yml
+  minPlayers: 0
+  stations:
+    Courthouse:
+      stationProto: StandardFrontierOutpost
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: "Courthouse"
+        - type: StationDeadDropHintExempt

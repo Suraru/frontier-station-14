@@ -48,7 +48,7 @@ public sealed partial class RoleLoadout : IEquatable<RoleLoadout>
     /// <summary>
     /// Ensures all prototypes exist and effects can be applied.
     /// </summary>
-    public void EnsureValid(HumanoidCharacterProfile profile, ICommonSession session, IDependencyCollection collection)
+    public void EnsureValid(HumanoidCharacterProfile profile, ICommonSession? session, IDependencyCollection collection) // Frontier: nullable session
     {
         var groupRemove = new ValueList<string>();
         var protoManager = collection.Resolve<IPrototypeManager>();
@@ -302,7 +302,7 @@ public sealed partial class RoleLoadout : IEquatable<RoleLoadout>
         if (!protoManager.TryIndex(loadout, out var loadoutProto))
         {
             // Uhh
-            reason = FormattedMessage.FromMarkup("");
+            reason = FormattedMessage.FromMarkupOrThrow("");
             return false;
         }
 
