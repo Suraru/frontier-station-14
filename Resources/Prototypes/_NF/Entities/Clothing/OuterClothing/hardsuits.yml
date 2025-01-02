@@ -71,8 +71,6 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitPilot
-  - type: StaticPrice
-    price: 195
 
 #ERT Mail Carrier Hardsuit
 - type: entity
@@ -124,7 +122,7 @@
   - ContrabandClothing
   id: ClothingOuterHardsuitSyndieEliteUnremoveable
   name: syndicate hardsuit
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: Unremoveable
   - type: Sprite
@@ -138,7 +136,7 @@
   - ContrabandClothing
   id: ClothingOuterHardsuitSyndieBloodRedUnremoveable
   name: syndicate hardsuit
-  noSpawn: true
+  categories: [ HideSpawnMenu ]
   components:
   - type: Unremoveable
   - type: Sprite
@@ -227,7 +225,7 @@
     clothingPrototype: ClothingHeadHelmetHardsuitNfsdBrigmedic
 
 - type: entity
-  parent: ClothingOuterHardsuitJuggernaut # Jugger Suit
+  parent: [BaseC2ContrabandUnredeemable, ClothingOuterHardsuitJuggernaut] # Jugger Suit
   id: ClothingOuterHardsuitNfsdExperimental
   name: experimental nfsd hardsuit
   description: An experimental nfsd hardsuit, never before seen!
@@ -344,6 +342,8 @@
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitScaf
+  - type: PirateBountyItem
+    id: ClothingOuterHardsuitScaf
 
 # Tactical Maid Hardsuit
 
@@ -380,7 +380,7 @@
     clothingPrototype: ClothingHeadHelmetHardsuitTacticalMaid
 
 - type: entity
-  parent: ClothingOuterHardsuitBaseNF
+  parent: [BaseC3PirateContraband, ClothingOuterHardsuitBaseNF]
   id: ClothingOuterHardsuitPirateElite
   name: elite pirate hardsuit
   description: An ancient elite armored hardsuit, designed by an unknown bearded man and built like a brick house.

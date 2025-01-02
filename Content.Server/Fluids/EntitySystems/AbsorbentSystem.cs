@@ -1,5 +1,4 @@
 using System.Numerics;
-using Content.Server.Chemistry.Containers.EntitySystems;
 using Content.Server.Popups;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.EntitySystems;
@@ -27,7 +26,7 @@ public sealed class AbsorbentSystem : SharedAbsorbentSystem
     [Dependency] private readonly PuddleSystem _puddleSystem = default!;
     [Dependency] private readonly SharedMeleeWeaponSystem _melee = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
-    [Dependency] private readonly SolutionContainerSystem _solutionContainerSystem = default!;
+    [Dependency] private readonly SharedSolutionContainerSystem _solutionContainerSystem = default!;
     [Dependency] private readonly UseDelaySystem _useDelay = default!;
     [Dependency] private readonly MapSystem _mapSystem = default!;
 
@@ -256,6 +255,11 @@ public sealed class AbsorbentSystem : SharedAbsorbentSystem
             {
                 _popups.PopupEntity(Loc.GetString("mopping-system-full", ("used", target)), user, user);
             }
+            // Frontier: out-only refillable solutions
+            else if (TryComp<RefillableSolutionComponent>(refillableSoln.Owner, out var refillableSolnComp) && refillableSolnComp.PreventTransferOut)
+            {
+            }
+            // End Frontier
             else
             {
                 // transfer as much contaminants to refillable as will fit

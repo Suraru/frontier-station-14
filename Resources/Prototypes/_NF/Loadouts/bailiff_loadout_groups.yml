@@ -13,7 +13,10 @@
   name: loadout-group-contractor-outerclothing
   minLimit: 0
   loadouts:
+  - ContractorClothingOuterVestTank
   - BailiffOuterClothing
+  fallbacks:
+  - ContractorClothingOuterVestTank
 
 - type: loadoutGroup
   id: BailiffHead
@@ -25,8 +28,10 @@
 - type: loadoutGroup
   id: BailiffNeck
   name: loadout-group-contractor-neck
-  minLimit: 0
+  hidden: true
   loadouts:
+  - BailiffClothingNeckBadgeBailiff
+  fallbacks:
   - BailiffClothingNeckBadgeBailiff
 
 - type: loadoutGroup

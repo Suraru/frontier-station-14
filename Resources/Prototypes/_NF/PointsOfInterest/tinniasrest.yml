@@ -10,8 +10,23 @@
 # Down at your local saloon
 - type: pointOfInterest
   id: Tinnia
+  parent: BasePOI
   name: "Tinnia's Rest"
-  rangeMin: 1200
-  rangeMax: 2900
-  iffColor: "#ffa600" #yellorange for faction style
+  minimumDistance: 1200
+  maximumDistance: 2900
+  spawnGroup: RestStop
   gridPath: /Maps/_NF/POI/tinnia.yml
+  addComponents:
+  - type: StationTransit
+
+- type: gameMap
+  id: Tinnia
+  mapName: "Tinnia's Rest"
+  mapPath: /Maps/_NF/POI/tinnia.yml
+  minPlayers: 0
+  stations:
+    Tinnia:
+      stationProto: DeadDropFrontierOutpost
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: "Tinnia's Rest"

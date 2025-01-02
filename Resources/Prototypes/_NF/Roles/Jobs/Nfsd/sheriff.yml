@@ -28,12 +28,11 @@
   whitelisted: true
   startingGear: SheriffGear
   alwaysUseSpawner: true
-  icon: "JobIconHeadOfSecurity"
+  icon: JobIconSheriff
   requireAdminNotify: true
   supervisors: job-supervisors-centcom
   weight: 180
   displayWeight: 70
-  whitelistRequired: true
   canBeAntag: false
   accessGroups:
   - AllAccess
@@ -50,15 +49,13 @@
 - type: startingGear
   id: SheriffGear
   equipment:
-    ears: ClothingHeadsetAltNfsdCreamandBrown
     pocket1: WeaponPistolMk58 #WeaponPistolMk58Nonlethal
-    pocket2: HoloprojectorNfsd
+    pocket2: WeaponEnergyGunMultiphase # DeltaV gun
   storage:
     back:
     - NfsdTechFabFlatpack
     - Multitool
-    - WeaponEnergyGunMultiphase # DeltaV gun
+    - HoloprojectorNfsd
     - DoorRemoteNfsd
     - BaseSecurityUplinkRadioSheriff
-    - ClothingNeckNfsdBadgeSheriff
     - RubberStampSheriff

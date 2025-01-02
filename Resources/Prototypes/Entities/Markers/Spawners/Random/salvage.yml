@@ -5,6 +5,7 @@
   name: Salvage Material Crate Spawner
   id: SalvageMaterialCrateSpawner
   parent: MarkerBase
+  categories: [ HideSpawnMenu ] # Frontier: NFSalvageMaterialCrateSpawner
   components:
     - type: Sprite
       layers:
@@ -23,7 +24,7 @@
         - CrateServiceJanitorialSupplies
         - CrateHydroponicsSeedsMedicinal
         - CrateEmergencyInternals
-#        - CrateFoodMRE # Frontier
+        - CrateFoodMRE
         - CrateMaterialTextiles
         - CrateMedicalSupplies
         - CrateEngineeringCableBulk
@@ -36,29 +37,6 @@
       rareChance: 0.4
       prototypes:
         - CrateSalvageAssortedGoodies
-      chance: 0.9
-      offset: 0.0
-
-- type: entity
-  name: Salvage Canister Spawner
-  id: SalvageCanisterSpawner
-  parent: MarkerBase
-  components:
-    - type: Sprite
-      layers:
-        - state: red
-        - sprite: Structures/Storage/canister.rsi
-          state: blue
-    - type: RandomSpawner
-      rarePrototypes:
-        - PlasmaCanister
-      rareChance: 0.03
-      prototypes:
-        - AirCanister
-        - NitrogenCanister
-        - OxygenCanister
-        - CarbonDioxideCanister
-        - WaterVaporCanister
       chance: 0.9
       offset: 0.0
 
